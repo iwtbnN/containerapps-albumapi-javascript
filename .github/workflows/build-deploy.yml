@@ -32,9 +32,18 @@ jobs:
           registry: ${{ env.CONTAINER_REGISTRY }}
           username: ${{ secrets.CONTAINER_REGISTRY_USERNAME }}
           password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
+
+      # Add a step
+      - name: Build and push container image to registry
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ env.CONTAINER_REGISTRY }}/${{ env.REPOSITORY_NAME }}:${{ github.sha }}
+          file: ./Dockerfile
+          context: ./
   # Add a job and steps
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     needs: build
     permissions:
       id-token: write
